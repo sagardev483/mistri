@@ -35,17 +35,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    'apps.bookings',
-    'apps.services',
-    'apps.reviews',
-    'apps.providers',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
     'apps.core',
+    'apps.users',
+    'apps.providers',
+    'apps.services',
+    'apps.bookings',
+    'apps.reviews',
 ]
+
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corseheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
