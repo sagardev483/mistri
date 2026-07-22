@@ -40,8 +40,6 @@ class Booking(models.Model):
 
     class Meta:
         ordering = ['-start_time']
-    class Meta:
-        ordering = ['-start_time']
         constraints = [
             ExclusionConstraint(
                 name='exclude_overlapping_bookings',
