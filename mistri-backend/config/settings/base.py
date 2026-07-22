@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.services',
     'apps.bookings',
     'apps.payments',
+    'apps.notifications',
     'apps.reviews',
 ]
 
