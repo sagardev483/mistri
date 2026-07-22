@@ -79,3 +79,28 @@ class Booking(models.Model):
                 target=Status.CANCELLED)
     def cancel(self):
         pass
+    
+# apps/bookings/models.py — add this below Booking
+class BookingStatusHistory(models.Model):
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='status_history',
+    )
+    from_status = models.CharField(max_length=50)
+    to_status = models.CharField(max_length=50)
+    changed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='booking_status_changes',
+    )
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['changed_at']
+        verbose_name_plural = 'Booking status histories'
+
+    def __str__(self):
+        return f"Booking #{self.booking_id}: {self.from_status} -> {self.to_status}"

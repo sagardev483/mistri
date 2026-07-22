@@ -1,7 +1,7 @@
 # apps/bookings/signals.py
 from django.dispatch import receiver
 from django_fsm.signals import post_transition
-from .models import Booking
+from .models import Booking, BookingStatusHistory
 from apps.notifications.models import Notification
 from apps.notifications.services import notify
 
@@ -20,3 +20,11 @@ def booking_transitioned(sender, instance, name, source, target, **kwargs):
         notif_type, title, message = messages[name]
         notify(recipient=instance.customer, notification_type=notif_type,
                title=title, message=message, related_object=instance)
+        
+@receiver(post_transition, sender=Booking)
+def booking_status_logged(sender, instance, name, source, target, **kwargs):
+    BookingStatusHistory.objects.create(
+        booking=instance,
+        from_status=source,
+        to_status=target,
+    )
