@@ -13,17 +13,41 @@ export interface User {
   phone_number: string;
 }
 
+export interface ServiceCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface Service {
+  id: number;
+  title: string;
+  description: string;
+  base_price: string;
+  duration_minutes: number;
+  category: ServiceCategory;
+  provider: number;
+  provider_name: string;
+}
+
+export interface Booking {
+  id: number;
+  service: number;
+  service_title: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  notes: string;
+  created_at: string;
+}
+
 export async function loginUser(username: string, password: string): Promise<LoginResponse> {
   const res = await fetch(`${API_BASE_URL}/users/login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
   });
-
-  if (!res.ok) {
-    throw new Error("Invalid username or password");
-  }
-
+  if (!res.ok) throw new Error("Invalid username or password");
   return res.json();
 }
 
@@ -31,10 +55,60 @@ export async function fetchMe(accessToken: string): Promise<User> {
   const res = await fetch(`${API_BASE_URL}/users/me/`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
+  if (!res.ok) throw new Error("Session expired, please log in again");
+  return res.json();
+}
 
+export async function registerUser(data: {
+  username: string;
+  email: string;
+  password: string;
+  user_type: "customer" | "provider";
+  phone_number?: string;
+}): Promise<User> {
+  const res = await fetch(`${API_BASE_URL}/users/register/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
   if (!res.ok) {
-    throw new Error("Session expired, please log in again");
+    const body = await res.json().catch(() => ({}));
+    throw new Error(Object.values(body).flat().join(" ") || "Registration failed");
   }
+  return res.json();
+}
 
+export async function fetchServices(): Promise<Service[]> {
+  const res = await fetch(`${API_BASE_URL}/services/`);
+  if (!res.ok) throw new Error("Could not load services");
+  return res.json();
+}
+
+export async function createBooking(
+  accessToken: string,
+  payload: { service: number; start_time: string; end_time: string; notes?: string }
+): Promise<Booking> {
+  const res = await fetch(`${API_BASE_URL}/bookings/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(
+      typeof body === "object" ? JSON.stringify(body) : "Booking failed"
+    );
+  }
+  return res.json();
+}
+
+export async function fetchMyBookings(accessToken: string): Promise<Booking[]> {
+  const res = await fetch(`${API_BASE_URL}/bookings/mine/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not load bookings");
   return res.json();
 }
