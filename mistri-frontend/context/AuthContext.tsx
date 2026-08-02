@@ -22,23 +22,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // On first mount, check if a token was saved from a previous session.
   // If so, verify it's still valid by fetching the user's profile.
-  useEffect(() => {
+useEffect(() => {
+  async function initializeAuth() {
     const savedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+
     if (!savedToken) {
       setLoading(false);
       return;
     }
-    fetchMe(savedToken)
-      .then((me) => {
-        setAccessToken(savedToken);
-        setUser(me);
-      })
-      .catch(() => {
-        // token expired or invalid — clear it rather than leaving stale data
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+
+    try {
+      const me = await fetchMe(savedToken);
+      setAccessToken(savedToken);
+      setUser(me);
+    } catch {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  void initializeAuth();
+}, []);
 
   async function login(username: string, password: string) {
     const { access } = await loginUser(username, password);

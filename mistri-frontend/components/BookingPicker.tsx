@@ -48,7 +48,7 @@ export default function BookingPicker({
   onConfirm,
   confirmLabel = "Confirm booking",
 }: BookingPickerProps) {
-  const dateOptions = useMemo(buildDateOptions, []);
+  const dateOptions = useMemo(() => buildDateOptions(), []);
   const [selectedDate, setSelectedDate] = useState<Date>(dateOptions[0]);
   const [selectedSlot, setSelectedSlot] = useState<Date | null>(null);
 
