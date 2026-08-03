@@ -27,4 +27,5 @@ def booking_status_logged(sender, instance, name, source, target, **kwargs):
         booking=instance,
         from_status=source,
         to_status=target,
+        changed_by=getattr(instance, '_changed_by', None),
     )
