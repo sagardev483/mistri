@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from django_fsm import TransitionNotAllowed
 from .models import Provider
 from .serializers import ProviderSerializer, ProviderProfileSerializer
+from rest_framework.permissions import IsAdminUser
+from django.shortcuts import get_object_or_404
 
 
 class IsProviderUser(permissions.BasePermission):
@@ -78,3 +80,36 @@ class SubmitForReviewView(APIView):
             )
         provider.save()
         return Response(ProviderProfileSerializer(provider).data)
+    
+
+
+class AdminVerifyProviderView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, pk):
+        provider = get_object_or_404(Provider, pk=pk)
+        try:
+            provider.verify()
+        except TransitionNotAllowed:
+            return Response(
+                {'detail': f'Cannot verify from status "{provider.verification_status}".'},
+                status=400,
+            )
+        provider.save()
+        return Response(ProviderSerializer(provider).data)
+
+
+class AdminRejectProviderView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, pk):
+        provider = get_object_or_404(Provider, pk=pk)
+        try:
+            provider.reject()
+        except TransitionNotAllowed:
+            return Response(
+                {'detail': f'Cannot reject from status "{provider.verification_status}".'},
+                status=400,
+            )
+        provider.save()
+        return Response(ProviderSerializer(provider).data)

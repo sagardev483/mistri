@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from django_fsm import TransitionNotAllowed
 from .models import Booking
 from .serializers import BookingSerializer
+from apps.payments.models import Payment
 
 
 class BookingCreateView(generics.CreateAPIView):
@@ -34,15 +35,12 @@ class ProviderBookingsListView(generics.ListAPIView):
         ).select_related('service', 'customer')
 
 
+
 class BookingTransitionView(APIView):
-    """
-    Shared logic for every booking FSM transition endpoint.
-    Subclasses just set `transition_name` (e.g. 'confirm') and
-    `allowed_role` ('provider' or 'customer') — everything else is identical.
-    """
     permission_classes = [permissions.IsAuthenticated]
     transition_name = None
     allowed_role = None
+    creates_payment = False   # <-- new flag, only True for ConfirmBookingView
 
     def _is_allowed(self, request, booking):
         if self.allowed_role == 'provider':
@@ -63,7 +61,7 @@ class BookingTransitionView(APIView):
                 status=403,
             )
 
-        booking._changed_by = request.user  # read by the post_transition signal
+        booking._changed_by = request.user
         transition = getattr(booking, self.transition_name)
         try:
             transition()
@@ -73,7 +71,20 @@ class BookingTransitionView(APIView):
                 status=400,
             )
         booking.save()
+
+        if self.creates_payment and not booking.payments.exists():
+            Payment.objects.create(
+                booking=booking,
+                amount=booking.service.base_price,
+            )
+
         return Response(BookingSerializer(booking).data)
+
+
+class ConfirmBookingView(BookingTransitionView):
+    transition_name = 'confirm'
+    allowed_role = 'provider'
+    creates_payment = True
 
 
 class ConfirmBookingView(BookingTransitionView):
