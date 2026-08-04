@@ -87,11 +87,6 @@ class ConfirmBookingView(BookingTransitionView):
     creates_payment = True
 
 
-class ConfirmBookingView(BookingTransitionView):
-    transition_name = 'confirm'
-    allowed_role = 'provider'
-
-
 class DeclineBookingView(BookingTransitionView):
     transition_name = 'decline'
     allowed_role = 'provider'

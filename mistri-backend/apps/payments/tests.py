@@ -42,4 +42,5 @@ class PaymentCaptureTests(APITestCase):
         self.payment.save()
         self.client.force_authenticate(user=self.provider.user)
         res = self.client.post(f'/api/payments/{self.payment.id}/refund/')
+        self.assertEqual(res.status_code, 200, res.data)
         self.assertEqual(res.data['status'], 'refunded')
