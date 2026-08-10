@@ -6,6 +6,10 @@ from .models import Provider
 from .serializers import ProviderSerializer, ProviderProfileSerializer
 from rest_framework.permissions import IsAdminUser
 from django.shortcuts import get_object_or_404
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
+from rest_framework.exceptions import ValidationError
 
 
 class IsProviderUser(permissions.BasePermission):
@@ -113,3 +117,26 @@ class AdminRejectProviderView(APIView):
             )
         provider.save()
         return Response(ProviderSerializer(provider).data)
+    
+class NearbyProvidersView(generics.ListAPIView):
+    """Public. ?lat=..&lng=..&radius_km=10 (radius optional, defaults to 10)."""
+    serializer_class = ProviderSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        lat = self.request.query_params.get('lat')
+        lng = self.request.query_params.get('lng')
+        if lat is None or lng is None:
+            raise ValidationError('lat and lng query params are required.')
+        radius_km = float(self.request.query_params.get('radius_km', 10))
+
+        origin = Point(float(lng), float(lat), srid=4326)
+        return (
+            Provider.objects
+            .filter(
+                verification_status=Provider.VerificationStatus.VERIFIED,
+                location__distance_lte=(origin, D(km=radius_km)),
+            )
+            .annotate(distance=Distance('location', origin))
+            .order_by('distance')
+        )

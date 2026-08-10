@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django_fsm import FSMField, transition
 
@@ -19,6 +20,7 @@ class Provider(models.Model):
     business_name = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     years_experience = models.PositiveIntegerField(default=0)
+    location = gis_models.PointField(geography=True, null=True, blank=True)
 
     verification_status = FSMField(
         default=VerificationStatus.PENDING,

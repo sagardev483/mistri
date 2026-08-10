@@ -115,3 +115,13 @@ class BookingTransitionPermissionTests(APITestCase):
         self.client.force_authenticate(user=other)
         res = self.client.post(f'/api/bookings/{self.booking.id}/cancel/')
         self.assertEqual(res.status_code, 403)
+        
+    def test_confirm_endpoint_creates_payment_with_correct_amount(self):
+        """Guards against the ConfirmBookingView duplicate-class regression —
+        confirming via the actual API endpoint must create a Payment."""
+        self.client.force_authenticate(user=self.provider.user)
+        res = self.client.post(f'/api/bookings/{self.booking.id}/confirm/')
+        self.assertEqual(res.status_code, 200, res.data)
+        payment = Payment.objects.get(booking=self.booking)
+        self.assertEqual(payment.amount, self.service.base_price)
+        self.assertEqual(payment.status, Payment.Status.PENDING)

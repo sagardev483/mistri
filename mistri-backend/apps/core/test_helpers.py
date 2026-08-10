@@ -18,7 +18,9 @@ def make_verified_provider(username='provider1', password='testpass123'):
 
 def make_service(provider, title='Test Service', price='100.00', duration=60):
     category, _ = ServiceCategory.objects.get_or_create(name='General', slug='general')
-    return Service.objects.create(
+    service = Service.objects.create(
         provider=provider, category=category,
         title=title, base_price=price, duration_minutes=duration,
     )
+    service.refresh_from_db()  # base_price was set from a str; reload to get a real Decimal
+    return service
