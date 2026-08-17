@@ -10,31 +10,37 @@ export default function Navbar() {
   const t = useTranslations("nav");
 
   return (
-    <nav className="flex items-center justify-between border-b px-6 py-3">
-      <Link href="/" className="font-semibold">
-        {t("brand")}
+    <nav className="flex items-center justify-between border-b border-line px-6 py-3">
+      <Link href="/" className="font-display font-bold text-xl tracking-wide text-ink">
+        {t("brand").toUpperCase()}
       </Link>
 
-      <div className="flex items-center gap-4 text-sm">
-        <Link href="/services" className="hover:underline">
+      <div className="flex items-center gap-4 text-sm text-ink">
+        <Link href="/services" className="hover:text-brick transition-colors">
           {t("services")}
         </Link>
 
         {loading ? null : user ? (
           <>
-            <Link href="/dashboard" className="hover:underline">
+            <Link href="/dashboard" className="hover:text-brick transition-colors">
               {t("dashboard")}
             </Link>
-            <button onClick={logout} className="rounded bg-zinc-800 px-3 py-1.5 text-white">
+            <button
+              onClick={logout}
+              className="rounded bg-ink px-3 py-1.5 text-chalk hover:bg-ink/90 transition-colors"
+            >
               {t("logout")}
             </button>
           </>
         ) : (
           <>
-            <Link href="/login" className="hover:underline">
+            <Link href="/login" className="hover:text-brick transition-colors">
               {t("login")}
             </Link>
-            <Link href="/register" className="rounded bg-black px-3 py-1.5 text-white">
+            <Link
+              href="/register"
+              className="rounded bg-brick px-3 py-1.5 text-chalk hover:bg-brick-dark transition-colors"
+            >
               {t("signup")}
             </Link>
           </>

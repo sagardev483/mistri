@@ -181,3 +181,57 @@ export async function transitionBooking(
   }
   return res.json();
 }
+
+export interface ManagedService {
+  id: number;
+  title: string;
+  description: string;
+  base_price: string;
+  duration_minutes: number;
+  category: number;
+  is_active: boolean;
+}
+
+export async function fetchServiceCategories(): Promise<ServiceCategory[]> {
+  const res = await fetch(`${API_BASE_URL}/services/categories/`);
+  if (!res.ok) throw new Error("Could not load categories");
+  return res.json();
+}
+
+export async function fetchMyServices(accessToken: string): Promise<ManagedService[]> {
+  const res = await fetch(`${API_BASE_URL}/services/mine/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not load your services");
+  return res.json();
+}
+
+export async function createService(
+  accessToken: string,
+  data: { title: string; description?: string; base_price: string; duration_minutes: number; category: number }
+): Promise<ManagedService> {
+  const res = await fetch(`${API_BASE_URL}/services/mine/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(Object.values(body).flat().join(" ") || "Could not create service");
+  }
+  return res.json();
+}
+
+export async function updateServiceActive(
+  accessToken: string,
+  serviceId: number,
+  is_active: boolean
+): Promise<ManagedService> {
+  const res = await fetch(`${API_BASE_URL}/services/mine/${serviceId}/`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ is_active }),
+  });
+  if (!res.ok) throw new Error("Could not update service");
+  return res.json();
+}

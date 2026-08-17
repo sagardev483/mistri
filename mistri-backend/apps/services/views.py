@@ -1,7 +1,8 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
 from .models import Service
-from .serializers import ServiceSerializer, ServiceManageSerializer
+from .serializers import ServiceSerializer, ServiceManageSerializer, ServiceCategorySerializer
+from .models import ServiceCategory
 from apps.providers.models import Provider
 
 
@@ -11,6 +12,11 @@ class ServiceListView(generics.ListAPIView):
     serializer_class = ServiceSerializer
     permission_classes = [permissions.AllowAny]
 
+class ServiceCategoryListView(generics.ListAPIView):
+    """Public. All categories, so the create-service form has something to populate."""
+    queryset = ServiceCategory.objects.all()
+    serializer_class = ServiceCategorySerializer
+    permission_classes = [permissions.AllowAny]
 
 class IsVerifiedProvider(permissions.BasePermission):
     def has_permission(self, request, view):

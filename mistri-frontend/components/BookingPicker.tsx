@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import Button from "@/components/ui/Button";
 
 interface BookingPickerProps {
   durationMinutes: number;
@@ -69,10 +70,13 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
         {dateOptions.map((date) => {
           const isSelected = date.toDateString() === selectedDate.toDateString();
           return (
-            <button key={date.toISOString()} onClick={() => handlePickDate(date)}
+            <button
+              key={date.toISOString()}
+              onClick={() => handlePickDate(date)}
               className={`flex min-w-[3.25rem] flex-col items-center rounded border px-2 py-2 text-xs transition-colors ${
-                isSelected ? "border-black bg-black text-white" : "border-zinc-300 text-zinc-700 hover:border-zinc-500"
-              }`}>
+                isSelected ? "border-ink bg-ink text-chalk" : "border-line text-muted hover:border-faint"
+              }`}
+            >
               <span className="uppercase tracking-wide">{date.toLocaleDateString(dateLocale, { weekday: "short" })}</span>
               <span className="mt-0.5 text-sm font-semibold">{date.getDate()}</span>
             </button>
@@ -81,16 +85,19 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
       </div>
 
       {timeSlots.length === 0 ? (
-        <p className="text-sm text-zinc-500">No slots left today — try another date.</p>
+        <p className="text-sm text-faint">No slots left today — try another date.</p>
       ) : (
         <div className="grid grid-cols-4 gap-2">
           {timeSlots.map((slot) => {
             const isSelected = selectedSlot?.getTime() === slot.getTime();
             return (
-              <button key={slot.toISOString()} onClick={() => setSelectedSlot(slot)}
+              <button
+                key={slot.toISOString()}
+                onClick={() => setSelectedSlot(slot)}
                 className={`rounded border px-2 py-1.5 text-sm transition-colors ${
-                  isSelected ? "border-black bg-black text-white" : "border-zinc-300 text-zinc-700 hover:border-zinc-500"
-                }`}>
+                  isSelected ? "border-ink bg-ink text-chalk" : "border-line text-muted hover:border-faint"
+                }`}
+              >
                 {slot.toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" })}
               </button>
             );
@@ -99,14 +106,14 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
       )}
 
       {selectedSlot && (
-        <div className="flex items-center justify-between border-t pt-3">
-          <p className="text-sm text-zinc-600">
+        <div className="flex items-center justify-between border-t border-line pt-3">
+          <p className="text-sm text-muted">
             {selectedDate.toLocaleDateString(dateLocale, { weekday: "long", month: "short", day: "numeric" })} at{" "}
             {selectedSlot.toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" })} ({durationMinutes} min)
           </p>
-          <button onClick={handleConfirm} className="rounded bg-black px-4 py-1.5 text-sm text-white">
+          <Button size="sm" onClick={handleConfirm}>
             {confirmLabel ?? t("confirmBooking")}
-          </button>
+          </Button>
         </div>
       )}
     </div>

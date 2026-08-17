@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/useAuth";
 import { fetchServices, createBooking, Service } from "@/lib/api";
 import BookingPicker from "@/components/BookingPicker";
+import Button from "@/components/ui/Button";
+import TicketCard from "@/components/ui/TicketCard";
+import { ClockIcon, MapPinIcon } from "@/components/ui/icons";
 import Link from "next/link";
 
 export default function ServicesPage() {
@@ -35,50 +38,54 @@ export default function ServicesPage() {
     }
   }
 
-  if (loading) return <p className="p-8">{t("loading")}</p>;
-  if (error) return <p className="p-8 text-red-600">{error}</p>;
+  if (loading) return <p className="p-8 text-muted">{t("loading")}</p>;
+  if (error) return <p className="p-8 text-brick">{error}</p>;
 
   return (
     <div className="mx-auto max-w-2xl p-8">
-      <h1 className="mb-6 text-2xl font-semibold">{t("title")}</h1>
+      <h1 className="mb-6 font-display text-2xl font-bold text-ink">{t("title")}</h1>
 
       {!user && (
-        <p className="mb-4 text-sm text-zinc-600">
-          <Link href="/login">{t("loginPromptLink")}</Link> {t("loginPromptSuffix")}
+        <p className="mb-4 text-sm text-muted">
+          <Link href="/login" className="text-brick hover:underline">{t("loginPromptLink")}</Link> {t("loginPromptSuffix")}
         </p>
       )}
 
-      {message && <p className="mb-4 text-sm text-blue-700">{message}</p>}
+      {message && <p className="mb-4 text-sm text-verified">{message}</p>}
 
       <div className="space-y-4">
         {services.map((service) => (
-          <div key={service.id} className="rounded border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-medium">{service.title}</h2>
-                <p className="text-sm text-zinc-600">
-                  {service.category.name} • {service.provider_name} • {service.duration_minutes} min
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">Rs {service.base_price}</p>
-                <button
-                  onClick={() => setBookingServiceId(bookingServiceId === service.id ? null : service.id)}
-                  className="mt-1 rounded bg-black px-3 py-1 text-sm text-white"
-                >
-                  {t("book")}
-                </button>
-              </div>
-            </div>
-
-            {bookingServiceId === service.id && (
-              <div className="mt-3 border-t pt-3">
-                <BookingPicker durationMinutes={service.duration_minutes} onConfirm={(start, end) => handleBook(service, start, end)} confirmLabel={t("confirmBooking")} />
-              </div>
-            )}
-          </div>
+          <TicketCard
+            key={service.id}
+            refNumber={`#SV-${String(service.id).padStart(4, "0")}`}
+            title={service.title}
+            subtitle={`${service.category.name} · ${service.provider_name}`}
+            meta={[{ icon: <ClockIcon />, label: `${service.duration_minutes} min` }]}
+            price={`Rs ${service.base_price}`}
+            action={
+              <Button
+                size="sm"
+                onClick={() => setBookingServiceId(bookingServiceId === service.id ? null : service.id)}
+              >
+                {t("book")}
+              </Button>
+            }
+          >
+          </TicketCard>
         ))}
       </div>
+
+      {services.map((service) =>
+        bookingServiceId === service.id ? (
+          <div key={`picker-${service.id}`} className="mt-3 rounded-md border border-line bg-white p-4">
+            <BookingPicker
+              durationMinutes={service.duration_minutes}
+              onConfirm={(start, end) => handleBook(service, start, end)}
+              confirmLabel={t("confirmBooking")}
+            />
+          </div>
+        ) : null
+      )}
     </div>
   );
 }
