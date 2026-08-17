@@ -34,6 +34,7 @@ export interface Booking {
   id: number;
   service: number;
   service_title: string;
+  customer_username: string;
   start_time: string;
   end_time: string;
   status: string;
@@ -110,5 +111,73 @@ export async function fetchMyBookings(accessToken: string): Promise<Booking[]> {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!res.ok) throw new Error("Could not load bookings");
+  return res.json();
+}
+export interface ProviderProfile {
+  id: number;
+  business_name: string;
+  bio: string;
+  years_experience: number;
+  verification_status: "pending" | "under_review" | "verified" | "rejected" | "suspended";
+}
+
+export async function fetchMyProviderProfile(accessToken: string): Promise<ProviderProfile | null> {
+  const res = await fetch(`${API_BASE_URL}/providers/me/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (res.status === 404) return null; // no profile created yet — not an error
+  if (!res.ok) throw new Error("Could not load provider profile");
+  return res.json();
+}
+
+export async function createProviderProfile(
+  accessToken: string,
+  data: { business_name: string; bio?: string; years_experience?: number }
+): Promise<ProviderProfile> {
+  const res = await fetch(`${API_BASE_URL}/providers/me/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(Object.values(body).flat().join(" ") || "Could not create profile");
+  }
+  return res.json();
+}
+
+export async function submitProviderForReview(accessToken: string): Promise<ProviderProfile> {
+  const res = await fetch(`${API_BASE_URL}/providers/me/submit-for-review/`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || "Could not submit for review");
+  }
+  return res.json();
+}
+
+export async function fetchProviderBookings(accessToken: string): Promise<Booking[]> {
+  const res = await fetch(`${API_BASE_URL}/bookings/provider/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not load bookings");
+  return res.json();
+}
+
+export async function transitionBooking(
+  accessToken: string,
+  bookingId: number,
+  action: "confirm" | "decline" | "complete"
+): Promise<Booking> {
+  const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}/${action}/`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `Could not ${action} booking`);
+  }
   return res.json();
 }

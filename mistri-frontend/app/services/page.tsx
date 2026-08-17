@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/useAuth";
 import { fetchServices, createBooking, Service } from "@/lib/api";
 import BookingPicker from "@/components/BookingPicker";
@@ -13,12 +14,10 @@ export default function ServicesPage() {
   const [bookingServiceId, setBookingServiceId] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const { accessToken, user } = useAuth();
+  const t = useTranslations("services");
 
   useEffect(() => {
-    fetchServices()
-      .then(setServices)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    fetchServices().then(setServices).catch((err) => setError(err.message)).finally(() => setLoading(false));
   }, []);
 
   async function handleBook(service: Service, start: Date, end: Date) {
@@ -28,11 +27,7 @@ export default function ServicesPage() {
     }
     setMessage(null);
     try {
-      await createBooking(accessToken, {
-        service: service.id,
-        start_time: start.toISOString(),
-        end_time: end.toISOString(),
-      });
+      await createBooking(accessToken, { service: service.id, start_time: start.toISOString(), end_time: end.toISOString() });
       setMessage(`Booked "${service.title}" for ${start.toLocaleString()}`);
       setBookingServiceId(null);
     } catch (err) {
@@ -40,16 +35,16 @@ export default function ServicesPage() {
     }
   }
 
-  if (loading) return <p className="p-8">Loading services...</p>;
+  if (loading) return <p className="p-8">{t("loading")}</p>;
   if (error) return <p className="p-8 text-red-600">{error}</p>;
 
   return (
     <div className="mx-auto max-w-2xl p-8">
-      <h1 className="mb-6 text-2xl font-semibold">Available Services</h1>
+      <h1 className="mb-6 text-2xl font-semibold">{t("title")}</h1>
 
       {!user && (
         <p className="mb-4 text-sm text-zinc-600">
-          <Link href="/login">Log in</Link>to book a service.
+          <Link href="/login">{t("loginPromptLink")}</Link> {t("loginPromptSuffix")}
         </p>
       )}
 
@@ -68,22 +63,17 @@ export default function ServicesPage() {
               <div className="text-right">
                 <p className="font-semibold">Rs {service.base_price}</p>
                 <button
-                  onClick={() =>
-                    setBookingServiceId(bookingServiceId === service.id ? null : service.id)
-                  }
+                  onClick={() => setBookingServiceId(bookingServiceId === service.id ? null : service.id)}
                   className="mt-1 rounded bg-black px-3 py-1 text-sm text-white"
                 >
-                  Book
+                  {t("book")}
                 </button>
               </div>
             </div>
 
             {bookingServiceId === service.id && (
               <div className="mt-3 border-t pt-3">
-                <BookingPicker
-                  durationMinutes={service.duration_minutes}
-                  onConfirm={(start, end) => handleBook(service, start, end)}
-                />
+                <BookingPicker durationMinutes={service.duration_minutes} onConfirm={(start, end) => handleBook(service, start, end)} confirmLabel={t("confirmBooking")} />
               </div>
             )}
           </div>

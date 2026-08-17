@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "brand": "Mistri",
+    "services": "Services",
+    "dashboard": "Dashboard",
+    "logout": "Log out",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to Mistri",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Log in",
+      "error": "Login failed"
+    },
+    "register": {
+      "title": "Create your Mistri account",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password (min 8 characters)",
+      "customer": "I'm looking for services",
+      "provider": "I provide services",
+      "submit": "Sign up",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "error": "Registration failed"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}",
+    "accountType": "Account type: {type}",
+    "typeCustomer": "Customer",
+    "typeProvider": "Provider",
+    "logout": "Log out",
+    "myBookings": "My Bookings",
+    "loading": "Loading...",
+    "noBookings": "No bookings yet.",
+    "browseServices": "Browse services",
+    "notLoggedIn": "You're not logged in.",
+    "loginLink": "Log in"
+  },
+  "services": {
+    "title": "Available Services",
+    "loading": "Loading services...",
+    "loginPromptPrefix": "",
+    "loginPromptLink": "Log in",
+    "loginPromptSuffix": "to book a service.",
+    "book": "Book",
+    "confirmBooking": "Confirm booking"
+  }
+}

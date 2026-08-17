@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "brand": "Mistri",
+    "services": "\u0938\u0947\u0935\u093E\u0939\u0930\u0942",
+    "dashboard": "\u0921\u094D\u092F\u093E\u0938\u092C\u094B\u0930\u094D\u0921",
+    "logout": "\u0932\u0917\u0906\u0909\u091F",
+    "login": "\u0932\u0917 \u0907\u0928",
+    "signup": "\u0938\u093E\u0907\u0928 \u0905\u092A"
+  },
+  "auth": {
+    "login": {
+      "title": "मिस्त्रीमा लग इन गर्नुहोस्",
+      "username": "प्रयोगकर्ता नाम",
+      "password": "पासवर्ड",
+      "submit": "लग इन",
+      "error": "लग इन असफल भयो"
+    },
+    "register": {
+      "title": "आफ्नो मिस्त्री खाता बनाउनुहोस्",
+      "username": "प्रयोगकर्ता नाम",
+      "email": "इमेल",
+      "password": "पासवर्ड (कम्तिमा ८ अक्षर)",
+      "customer": "म सेवा खोजिरहेको छु",
+      "provider": "म सेवा प्रदान गर्छु",
+      "submit": "साइन अप",
+      "submitting": "खाता बनाइँदैछ...",
+      "haveAccount": "पहिले नै खाता छ?",
+      "loginLink": "लग इन",
+      "error": "दर्ता असफल भयो"
+    }
+  },
+  "dashboard": {
+    "welcome": "\u0938\u094D\u0935\u093E\u0917\u0924 \u091B, {name}",
+    "accountType": "\u0916\u093E\u0924\u093E\u0915\u094B \u092A\u094D\u0930\u0915\u093E\u0930: {type}",
+    "typeCustomer": "\u0917\u094D\u0930\u093E\u0939\u0915",
+    "typeProvider": "\u0938\u0947\u0935\u093E \u092A\u094D\u0930\u0926\u093E\u092F\u0915",
+    "logout": "\u0932\u0917\u0906\u0909\u091F",
+    "myBookings": "\u092E\u0947\u0930\u094B \u092C\u0941\u0915\u093F\u0919\u0939\u0930\u0942",
+    "loading": "\u0932\u094B\u0921 \u0939\u0941\u0901\u062F\u0948\u091B...",
+    "noBookings": "\u0905\u0939\u093F\u0932\u0947\u0938\u092E\u094D\u092E \u0915\u0941\u0928\u0948 \u092C\u0941\u0915\u093F\u0919 \u091B\u0948\u0928\u0964",
+    "browseServices": "\u0938\u0947\u0935\u093E\u0939\u0930\u0942 \u0939\u0947\u0930\u094D\u0928\u0941\u0939\u094B\u0938\u094D",
+    "notLoggedIn": "\u0924\u092A\u093E\u0908\u0902 \u0932\u0917 \u0907\u0928 \u0939\u0941\u0928\u0941\u092D\u090F\u0915\u094B \u091B\u0948\u0928\u0964",
+    "loginLink": "\u0932\u0917 \u0907\u0928"
+  },
+  "services": {
+    "title": "उपलब्ध सेवाहरू",
+    "loading": "सेवाहरू लोड हुँदैछन्...",
+    "loginPromptPrefix": "",
+    "loginPromptLink": "लग इन",
+    "loginPromptSuffix": "गरेर सेवा बुक गर्नुहोस्।",
+    "book": "बुक गर्नुहोस्",
+    "confirmBooking": "बुकिङ पुष्टि गर्नुहोस्"
+  }
+}
