@@ -2,6 +2,7 @@
   "nav": {
     "brand": "Mistri",
     "services": "Services",
+    "nearby": "Nearby",
     "dashboard": "Dashboard",
     "logout": "Log out",
     "login": "Log in",
@@ -49,7 +50,10 @@
     "loginPromptLink": "Log in",
     "loginPromptSuffix": "to book a service.",
     "book": "Book",
-    "confirmBooking": "Confirm booking"
+    "confirmBooking": "Confirm booking",
+    "filteredByProvider": "Showing services from this provider",
+    "clearFilter": "Show all",
+    "cancel": "Cancel"
   },
   "provider": {
   "title": "Provider dashboard",
@@ -89,5 +93,19 @@
   "confirm": "Confirm",
   "decline": "Decline",
   "complete": "Mark complete"
+},
+"nearby": {
+  "title": "Nearby providers",
+  "subtitle": "Find verified tradespeople near your current location",
+  "locating": "Finding your location...",
+  "locationDenied": "We couldn't get your location. You may need to allow location access in your browser.",
+  "retry": "Try again",
+  "radius": "Search radius",
+  "loading": "Loading providers...",
+  "noResults": "No verified providers found in this radius. Try widening it.",
+  "verifiedLabel": "Verified",
+  "yearsExperience": "years experience",
+  "viewServices": "View services"
 }
+
 }

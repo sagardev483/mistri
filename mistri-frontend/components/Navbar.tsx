@@ -19,6 +19,9 @@ export default function Navbar() {
         <Link href="/services" className="hover:text-brick transition-colors">
           {t("services")}
         </Link>
+        <Link href="/providers/nearby" className="hover:text-brick transition-colors">
+          {t("nearby")}
+        </Link>
 
         {loading ? null : user ? (
           <>

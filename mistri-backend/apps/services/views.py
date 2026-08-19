@@ -7,10 +7,17 @@ from apps.providers.models import Provider
 
 
 class ServiceListView(generics.ListAPIView):
-    """Public, read-only. Anyone can browse active services — no login required."""
-    queryset = Service.objects.filter(is_active=True).select_related('provider', 'category')
+    """Public, read-only. Anyone can browse active services — no login required.
+    Optional ?provider=<id> narrows to one provider's services."""
     serializer_class = ServiceSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        qs = Service.objects.filter(is_active=True).select_related('provider', 'category')
+        provider_id = self.request.query_params.get('provider')
+        if provider_id:
+            qs = qs.filter(provider_id=provider_id)
+        return qs
 
 class ServiceCategoryListView(generics.ListAPIView):
     """Public. All categories, so the create-service form has something to populate."""

@@ -79,11 +79,6 @@ export async function registerUser(data: {
   return res.json();
 }
 
-export async function fetchServices(): Promise<Service[]> {
-  const res = await fetch(`${API_BASE_URL}/services/`);
-  if (!res.ok) throw new Error("Could not load services");
-  return res.json();
-}
 
 export async function createBooking(
   accessToken: string,
@@ -233,5 +228,35 @@ export async function updateServiceActive(
     body: JSON.stringify({ is_active }),
   });
   if (!res.ok) throw new Error("Could not update service");
+  return res.json();
+}
+
+export interface NearbyProvider {
+  id: number;
+  username: string;
+  business_name: string;
+  bio: string;
+  years_experience: number;
+  verification_status: string;
+  latitude: number | null;
+  longitude: number | null;
+  distance_km: number | null;
+}
+
+export async function fetchNearbyProviders(
+  lat: number,
+  lng: number,
+  radiusKm: number
+): Promise<NearbyProvider[]> {
+  const params = new URLSearchParams({ lat: String(lat), lng: String(lng), radius_km: String(radiusKm) });
+  const res = await fetch(`${API_BASE_URL}/providers/nearby/?${params}`);
+  if (!res.ok) throw new Error("Could not load nearby providers");
+  return res.json();
+}
+
+export async function fetchServices(providerId?: number | string): Promise<Service[]> {
+  const url = providerId ? `${API_BASE_URL}/services/?provider=${providerId}` : `${API_BASE_URL}/services/`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Could not load services");
   return res.json();
 }
