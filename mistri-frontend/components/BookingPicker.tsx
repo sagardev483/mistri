@@ -72,6 +72,7 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
           return (
             <button
               key={date.toISOString()}
+              data-testid="date-option"
               onClick={() => handlePickDate(date)}
               className={`flex min-w-[3.25rem] flex-col items-center rounded border px-2 py-2 text-xs transition-colors ${
                 isSelected ? "border-ink bg-ink text-chalk" : "border-line text-muted hover:border-faint"
@@ -93,6 +94,7 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
             return (
               <button
                 key={slot.toISOString()}
+                data-testid="time-slot"
                 onClick={() => setSelectedSlot(slot)}
                 className={`rounded border px-2 py-1.5 text-sm transition-colors ${
                   isSelected ? "border-ink bg-ink text-chalk" : "border-line text-muted hover:border-faint"

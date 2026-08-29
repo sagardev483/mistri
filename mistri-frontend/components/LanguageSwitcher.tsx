@@ -15,18 +15,20 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex overflow-hidden rounded border text-xs">
+    <div className="flex overflow-hidden rounded border border-line text-xs">
       <button
+        data-testid="locale-en"
         onClick={() => switchTo("en")}
-        className={`px-2 py-1 ${locale === "en" ? "bg-black text-white" : "text-zinc-600"}`}
+        className={`px-2 py-1 ${locale === "en" ? "bg-ink text-chalk" : "text-muted"}`}
       >
-        EN
+        {"English"}
       </button>
       <button
+        data-testid="locale-ne"
         onClick={() => switchTo("ne")}
-        className={`px-2 py-1 ${locale === "ne" ? "bg-black text-white" : "text-zinc-600"}`}
+        className={`px-2 py-1 ${locale === "ne" ? "bg-ink text-chalk" : "text-muted"}`}
       >
-        ने
+        {"\u0928\u0947\u092A\u093E\u0932\u0940"}
       </button>
     </div>
   );

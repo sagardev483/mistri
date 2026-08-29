@@ -10,7 +10,7 @@ from apps.notifications.services import notify
 def booking_transitioned(sender, instance, name, source, target, **kwargs):
     messages = {
         'confirm': (Notification.Type.BOOKING_CONFIRMED, 'Booking confirmed',
-                    f"Your booking for {instance.service.title} on {instance.start_time} was confirmed."),
+            f"Your booking for {instance.service.title} on {instance.start_time:%b %d, %Y at %I:%M %p} was confirmed."),
         'decline': (Notification.Type.BOOKING_DECLINED, 'Booking declined',
                     f"Your booking for {instance.service.title} was declined."),
         'cancel': (Notification.Type.BOOKING_CANCELLED, 'Booking cancelled',

@@ -19,7 +19,7 @@ class MyBookingsListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Booking.objects.filter(customer=self.request.user).select_related('service')
+        return Booking.objects.filter(customer=self.request.user).select_related('service', 'review')
 
 
 class ProviderBookingsListView(generics.ListAPIView):

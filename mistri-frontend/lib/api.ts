@@ -114,6 +114,24 @@ export interface ProviderProfile {
   bio: string;
   years_experience: number;
   verification_status: "pending" | "under_review" | "verified" | "rejected" | "suspended";
+  has_location: boolean;
+}
+
+export async function updateProviderLocation(
+  accessToken: string,
+  latitude: number,
+  longitude: number
+): Promise<ProviderProfile> {
+  const res = await fetch(`${API_BASE_URL}/providers/me/`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ latitude, longitude }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(Object.values(body).flat().join(" ") || "Could not update location");
+  }
+  return res.json();
 }
 
 export async function fetchMyProviderProfile(accessToken: string): Promise<ProviderProfile | null> {
@@ -258,5 +276,120 @@ export async function fetchServices(providerId?: number | string): Promise<Servi
   const url = providerId ? `${API_BASE_URL}/services/?provider=${providerId}` : `${API_BASE_URL}/services/`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Could not load services");
+  return res.json();
+}
+
+export interface Booking {
+  id: number;
+  service: number;
+  service_title: string;
+  customer_username: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  notes: string;
+  created_at: string;
+  has_review: boolean;
+}
+
+export interface Payment {
+  id: number;
+  booking: number;
+  amount: string;
+  currency: string;
+  status: "pending" | "authorized" | "captured" | "failed" | "refunded";
+  gateway: string;
+  gateway_reference: string;
+  created_at: string;
+}
+
+export async function fetchMyPayments(accessToken: string): Promise<Payment[]> {
+  const res = await fetch(`${API_BASE_URL}/payments/mine/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not load payments");
+  return res.json();
+}
+
+export async function capturePayment(accessToken: string, paymentId: number): Promise<Payment> {
+  const res = await fetch(`${API_BASE_URL}/payments/${paymentId}/capture/`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || "Payment failed");
+  }
+  return res.json();
+}
+
+export interface Review {
+  id: number;
+  booking: number;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
+export async function createReview(
+  accessToken: string,
+  data: { booking: number; rating: number; comment?: string }
+): Promise<Review> {
+  const res = await fetch(`${API_BASE_URL}/reviews/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(Object.values(body).flat().join(" ") || "Could not submit review");
+  }
+  return res.json();
+}
+
+export async function fetchProviderReviews(providerId: number | string): Promise<Review[]> {
+  const res = await fetch(`${API_BASE_URL}/reviews/provider/${providerId}/`);
+  if (!res.ok) throw new Error("Could not load reviews");
+  return res.json();
+}
+
+export interface RefreshResponse {
+  access: string;
+  refresh?: string;
+}
+
+export async function refreshAccessToken(refreshToken: string): Promise<RefreshResponse> {
+  const res = await fetch(`${API_BASE_URL}/users/login/refresh/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh: refreshToken }),
+  });
+  if (!res.ok) throw new Error("Session expired, please log in again");
+  return res.json();
+}
+
+export interface Notification {
+  id: number;
+  notification_type: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export async function fetchNotifications(accessToken: string): Promise<Notification[]> {
+  const res = await fetch(`${API_BASE_URL}/notifications/`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not load notifications");
+  return res.json();
+}
+
+export async function markNotificationRead(accessToken: string, id: number): Promise<Notification> {
+  const res = await fetch(`${API_BASE_URL}/notifications/${id}/read/`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error("Could not update notification");
   return res.json();
 }

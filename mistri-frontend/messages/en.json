@@ -41,7 +41,10 @@
     "noBookings": "No bookings yet.",
     "browseServices": "Browse services",
     "notLoggedIn": "You're not logged in.",
-    "loginLink": "Log in"
+    "loginLink": "Log in",
+    "payment": "Payment",
+    "payNow": "Pay now",
+    "paying": "Paying..."
   },
   "services": {
     "title": "Available Services",
@@ -92,7 +95,14 @@
   "noJobs": "No booking requests yet.",
   "confirm": "Confirm",
   "decline": "Decline",
-  "complete": "Mark complete"
+  "complete": "Mark complete",
+  "locationTitle": "Your location",
+  "locationBody": "Set your location so nearby customers can find you.",
+  "locationSet": "Location set",
+  "locationNotSet": "Not set",
+  "setLocation": "Set my location",
+  "updateLocation": "Update location",
+  "locating": "Locating..."
 },
 "nearby": {
   "title": "Nearby providers",
@@ -106,6 +116,20 @@
   "verifiedLabel": "Verified",
   "yearsExperience": "years experience",
   "viewServices": "View services"
+},
+"reviews": {
+  "rateYourExperience": "Rate your experience",
+  "commentPlaceholder": "Add a comment (optional)",
+  "submitting": "Submitting...",
+  "submitReview": "Submit review",
+  "leaveReview": "Leave a review",
+  "reviewSubmitted": "Review submitted — thank you!"
+},
+"notifications": {
+  "title": "Notifications",
+  "loading": "Loading...",
+  "empty": "No notifications yet."
 }
+
 
 }

@@ -61,3 +61,8 @@ coverage/
 # ------------------------------------
 dist/
 build/
+
+# Playwright
+mistri-frontend/playwright-report/
+mistri-frontend/test-results/
+mistri-frontend/blob-report/

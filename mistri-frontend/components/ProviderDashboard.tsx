@@ -13,6 +13,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import ManageServices from "@/components/ManageServices";
 import ProviderBookings from "@/components/ProviderBookings";
+import ProviderLocationCard from "@/components/ProviderLocationCard";
 
 export default function ProviderDashboard({ user, accessToken }: { user: User; accessToken: string }) {
   const t = useTranslations("provider");
@@ -108,6 +109,12 @@ export default function ProviderDashboard({ user, accessToken }: { user: User; a
               {submitting ? t("creating") : t("createProfile")}
             </Button>
           </form>
+        </div>
+      )}
+
+      {profile && (
+        <div className="mb-4">
+          <ProviderLocationCard accessToken={accessToken} hasLocation={profile.has_location} onUpdated={setProfile} />
         </div>
       )}
 

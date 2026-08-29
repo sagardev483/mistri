@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/useAuth";
 import LanguageSwitcher from "./LanguageSwitcher";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
-  const { user, logout, loading } = useAuth();
+  const { user, accessToken, logout, loading } = useAuth();
   const t = useTranslations("nav");
 
   return (
@@ -23,11 +24,12 @@ export default function Navbar() {
           {t("nearby")}
         </Link>
 
-        {loading ? null : user ? (
+        {loading ? null : user && accessToken ? (
           <>
             <Link href="/dashboard" className="hover:text-brick transition-colors">
               {t("dashboard")}
             </Link>
+            <NotificationBell accessToken={accessToken} />
             <button
               onClick={logout}
               className="rounded bg-ink px-3 py-1.5 text-chalk hover:bg-ink/90 transition-colors"

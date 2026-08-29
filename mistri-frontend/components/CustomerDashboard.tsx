@@ -2,19 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { fetchMyBookings, Booking, User } from "@/lib/api";
-import Badge from "@/components/ui/Badge";
-import { toneForStatus } from "@/lib/status";
+import { fetchMyBookings, fetchMyPayments, Booking, Payment, User } from "@/lib/api";
+import BookingListItem from "@/components/BookingListItem";
 import Link from "next/link";
 
 export default function CustomerDashboard({ user, accessToken }: { user: User; accessToken: string }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const t = useTranslations("dashboard");
 
   useEffect(() => {
-    fetchMyBookings(accessToken).then(setBookings).finally(() => setLoading(false));
+    Promise.all([fetchMyBookings(accessToken), fetchMyPayments(accessToken)])
+      .then(([b, p]) => {
+        setBookings(b);
+        setPayments(p);
+      })
+      .finally(() => setLoading(false));
   }, [accessToken]);
+
+  function handlePaymentUpdated(updated: Payment) {
+    setPayments((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+  }
+
+  function handleReviewSubmitted(bookingId: number) {
+    setBookings((prev) => prev.map((b) => (b.id === bookingId ? { ...b, has_review: true } : b)));
+  }
 
   return (
     <div className="mx-auto max-w-2xl flex-1 p-8">
@@ -32,15 +45,16 @@ export default function CustomerDashboard({ user, accessToken }: { user: User; a
           </Link>
         </p>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {bookings.map((b) => (
-            <div key={b.id} className="flex items-center justify-between rounded-md border border-line bg-white p-3 text-sm">
-              <div>
-                <p className="font-medium text-ink">{b.service_title}</p>
-                <p className="text-muted">{new Date(b.start_time).toLocaleString()}</p>
-              </div>
-              <Badge tone={toneForStatus(b.status)}>{b.status}</Badge>
-            </div>
+            <BookingListItem
+              key={b.id}
+              booking={b}
+              payment={payments.find((p) => p.booking === b.id) ?? null}
+              accessToken={accessToken}
+              onPaymentUpdated={handlePaymentUpdated}
+              onReviewSubmitted={() => handleReviewSubmitted(b.id)}
+            />
           ))}
         </div>
       )}

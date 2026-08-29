@@ -33,14 +33,18 @@ class ProviderSerializer(serializers.ModelSerializer):
 class ProviderProfileSerializer(serializers.ModelSerializer):
     latitude = serializers.FloatField(write_only=True, required=False)
     longitude = serializers.FloatField(write_only=True, required=False)
+    has_location = serializers.SerializerMethodField()
 
     class Meta:
         model = Provider
         fields = [
             'id', 'business_name', 'bio', 'years_experience',
-            'verification_status', 'latitude', 'longitude',
+            'verification_status', 'latitude', 'longitude', 'has_location',
         ]
-        read_only_fields = ['id', 'verification_status']
+        read_only_fields = ['id', 'verification_status', 'has_location']
+
+    def get_has_location(self, obj):
+        return obj.location is not None
 
     def create(self, validated_data):
         return self._set_location(Provider(**self._pop_coords(validated_data)), validated_data)
