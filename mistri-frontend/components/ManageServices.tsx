@@ -129,7 +129,7 @@ export default function ManageServices({ accessToken }: { accessToken: string })
       ) : (
         <div className="space-y-2">
           {services.map((s) => (
-            <div key={s.id} className="flex items-center justify-between rounded-md border border-line bg-white p-3 text-sm">
+                        <div key={s.id} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-md border border-line bg-white p-3 text-sm">
               <div>
                 <p className="font-medium text-ink">{s.title}</p>
                 <p className="text-muted">Rs {s.base_price} · {s.duration_minutes} min</p>

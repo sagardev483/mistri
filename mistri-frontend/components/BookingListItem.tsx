@@ -48,7 +48,7 @@ export default function BookingListItem({
 
   return (
     <div className="rounded-md border border-line bg-white p-3 text-sm">
-      <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <div>
           <p className="font-medium text-ink">{booking.service_title}</p>
           <p className="text-muted">{new Date(booking.start_time).toLocaleString()}</p>
@@ -57,7 +57,7 @@ export default function BookingListItem({
       </div>
 
       {payment && (
-        <div className="mt-2 flex items-center justify-between border-t border-line pt-2">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-line pt-2">
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted">{t("payment")}</span>
             <Badge tone={toneForStatus(payment.status)}>{payment.status}</Badge>

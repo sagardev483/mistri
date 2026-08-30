@@ -32,7 +32,7 @@ export default function ProviderBookings({ accessToken }: { accessToken: string 
         <div className="space-y-2">
           {bookings.map((b) => (
             <div key={b.id} className="rounded-md border border-line bg-white p-3 text-sm">
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <div>
                   <p className="font-medium text-ink">{b.service_title}</p>
                   <p className="text-muted">

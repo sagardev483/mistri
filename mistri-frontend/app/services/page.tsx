@@ -54,7 +54,7 @@ function ServicesContent() {
       <h1 className="mb-6 font-display text-2xl font-bold text-ink">{t("title")}</h1>
 
       {providerId && (
-        <div className="mb-4 flex items-center justify-between rounded-md border border-line bg-white px-4 py-2 text-sm">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-md border border-line bg-white px-4 py-2 text-sm">
           <span className="text-muted">{t("filteredByProvider")}</span>
           <Link href="/services" className="text-brick hover:underline">
             {t("clearFilter")}

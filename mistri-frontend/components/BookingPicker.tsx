@@ -88,7 +88,7 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
       {timeSlots.length === 0 ? (
         <p className="text-sm text-faint">No slots left today — try another date.</p>
       ) : (
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {timeSlots.map((slot) => {
             const isSelected = selectedSlot?.getTime() === slot.getTime();
             return (
@@ -108,7 +108,7 @@ export default function BookingPicker({ durationMinutes, onConfirm, confirmLabel
       )}
 
       {selectedSlot && (
-        <div className="flex items-center justify-between border-t border-line pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-line pt-3">
           <p className="text-sm text-muted">
             {selectedDate.toLocaleDateString(dateLocale, { weekday: "long", month: "short", day: "numeric" })} at{" "}
             {selectedSlot.toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" })} ({durationMinutes} min)
