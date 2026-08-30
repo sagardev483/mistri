@@ -5,6 +5,15 @@ from django.contrib.postgres.constraints import ExclusionConstraint
 from django.contrib.postgres.fields import RangeOperators
 from django.db.models import Q
 
+def payment_is_captured(booking):
+    """FSM condition for Booking.complete(): a job can only be marked
+    complete once its payment has actually been captured. Enforced here
+    — not just in the view — so it holds no matter which code path calls
+    complete(): admin action, shell, a future feature, not only this API.
+    """
+    from apps.payments.models import Payment
+    return booking.payments.filter(status=Payment.Status.CAPTURED).exists()
+
 
 class Booking(models.Model):
     class Status(models.TextChoices):
@@ -70,7 +79,10 @@ class Booking(models.Model):
     def decline(self):
         pass
 
-    @transition(field=status, source=Status.CONFIRMED, target=Status.COMPLETED)
+    @transition(field=status,
+                source=Status.CONFIRMED,
+                target=Status.COMPLETED,
+                conditions=[payment_is_captured])
     def complete(self):
         pass
 

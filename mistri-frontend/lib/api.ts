@@ -40,6 +40,8 @@ export interface Booking {
   status: string;
   notes: string;
   created_at: string;
+  has_review: boolean;
+  payment_status: string | null;
 }
 
 export async function loginUser(username: string, password: string): Promise<LoginResponse> {
@@ -277,19 +279,6 @@ export async function fetchServices(providerId?: number | string): Promise<Servi
   const res = await fetch(url);
   if (!res.ok) throw new Error("Could not load services");
   return res.json();
-}
-
-export interface Booking {
-  id: number;
-  service: number;
-  service_title: string;
-  customer_username: string;
-  start_time: string;
-  end_time: string;
-  status: string;
-  notes: string;
-  created_at: string;
-  has_review: boolean;
 }
 
 export interface Payment {

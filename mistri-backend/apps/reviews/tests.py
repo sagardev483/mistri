@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 from apps.core.test_helpers import make_customer, make_verified_provider, make_service
 from apps.bookings.models import Booking
+from apps.payments.models import Payment
 
 
 class ReviewTests(APITestCase):
@@ -18,6 +19,11 @@ class ReviewTests(APITestCase):
 
     def _complete_booking(self):
         self.booking.confirm()
+        self.booking.save()
+        payment = Payment.objects.create(booking=self.booking, amount=self.service.base_price)
+        payment.authorize()
+        payment.capture()
+        payment.save()
         self.booking.complete()
         self.booking.save()
 

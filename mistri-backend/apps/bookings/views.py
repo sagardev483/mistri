@@ -52,6 +52,12 @@ class BookingTransitionView(APIView):
             return booking.customer_id == request.user.id
         return False
 
+    def _extra_validation(self, booking):
+        """Optional hook for subclasses: return an error message to block
+        the transition with a 400, or None to let it proceed. Runs after
+        the permission check, before the FSM transition is attempted."""
+        return None
+
     def post(self, request, pk):
         booking = get_object_or_404(Booking, pk=pk)
 
@@ -60,6 +66,10 @@ class BookingTransitionView(APIView):
                 {'detail': 'You are not allowed to perform this action on this booking.'},
                 status=403,
             )
+
+        error = self._extra_validation(booking)
+        if error:
+            return Response({'detail': error}, status=400)
 
         booking._changed_by = request.user
         transition = getattr(booking, self.transition_name)
@@ -95,6 +105,11 @@ class DeclineBookingView(BookingTransitionView):
 class CompleteBookingView(BookingTransitionView):
     transition_name = 'complete'
     allowed_role = 'provider'
+
+    def _extra_validation(self, booking):
+        if not booking.payments.filter(status=Payment.Status.CAPTURED).exists():
+            return 'Cannot mark complete until the customer has paid.'
+        return None
 
 
 class CancelBookingView(BookingTransitionView):

@@ -136,7 +136,8 @@
   "locationNotSet": "Not set",
   "setLocation": "Set my location",
   "updateLocation": "Update location",
-  "locating": "Locating..."
+  "locating": "Locating...",
+  "awaitingPayment": "Awaiting payment"
 },
 "nearby": {
   "title": "Nearby providers",

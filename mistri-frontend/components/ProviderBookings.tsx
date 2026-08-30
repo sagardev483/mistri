@@ -11,14 +11,20 @@ export default function ProviderBookings({ accessToken }: { accessToken: string 
   const t = useTranslations("provider");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProviderBookings(accessToken).then(setBookings).finally(() => setLoading(false));
   }, [accessToken]);
 
   async function handleTransition(id: number, action: "confirm" | "decline" | "complete") {
-    const updated = await transitionBooking(accessToken, id, action);
-    setBookings((prev) => prev.map((b) => (b.id === id ? updated : b)));
+    setError(null);
+    try {
+      const updated = await transitionBooking(accessToken, id, action);
+      setBookings((prev) => prev.map((b) => (b.id === id ? updated : b)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Could not ${action} booking`);
+    }
   }
 
   if (loading) return <p className="text-sm text-muted">{t("loading")}</p>;
@@ -26,6 +32,7 @@ export default function ProviderBookings({ accessToken }: { accessToken: string 
   return (
     <div>
       <h2 className="mb-3 font-display font-bold text-ink">{t("myJobs")}</h2>
+      {error && <p className="mb-3 text-sm text-brick">{error}</p>}
       {bookings.length === 0 ? (
         <p className="text-sm text-muted">{t("noJobs")}</p>
       ) : (
@@ -51,10 +58,13 @@ export default function ProviderBookings({ accessToken }: { accessToken: string 
                   </Button>
                 </div>
               )}
-              {b.status === "confirmed" && (
+              {b.status === "confirmed" && b.payment_status === "captured" && (
                 <Button size="sm" onClick={() => handleTransition(b.id, "complete")}>
                   {t("complete")}
                 </Button>
+              )}
+              {b.status === "confirmed" && b.payment_status !== "captured" && (
+                <Badge tone="brass">{t("awaitingPayment")}</Badge>
               )}
             </div>
           ))}
