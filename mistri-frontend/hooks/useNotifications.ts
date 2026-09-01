@@ -17,11 +17,7 @@ export function useNotifications(accessToken: string | null) {
   }, [accessToken]);
 
   useEffect(() => {
-    if (!accessToken) {
-      setNotifications([]);
-      setLoading(false);
-      return;
-    }
+    if (!accessToken) return;
     load();
     const interval = setInterval(load, POLL_INTERVAL_MS);
     return () => clearInterval(interval);

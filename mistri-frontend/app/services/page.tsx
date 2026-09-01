@@ -23,13 +23,18 @@ function ServicesContent() {
   const { accessToken, user } = useAuth();
   const t = useTranslations("services");
 
-  useEffect(() => {
-    setLoading(true);
-    fetchServices(providerId ?? undefined)
-      .then(setServices)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [providerId]);
+  // services/page.tsx
+useEffect(() => {
+  // Resetting `loading` synchronously is intentional here: we want the
+  // spinner back immediately when the provider filter changes, not a
+  // flash of stale results. See github.com/react/react/issues/34743.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  setLoading(true);
+  fetchServices(providerId ?? undefined)
+    .then(setServices)
+    .catch((err) => setError(err.message))
+    .finally(() => setLoading(false));
+}, [providerId]);
 
   async function handleBook(service: Service, start: Date, end: Date) {
     if (!accessToken) {

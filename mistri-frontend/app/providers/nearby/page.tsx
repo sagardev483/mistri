@@ -25,15 +25,17 @@ export default function NearbyProvidersPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!coords) return;
-    setFetching(true);
-    setFetchError(null);
-    fetchNearbyProviders(coords.lat, coords.lng, radiusKm)
-      .then(setProviders)
-      .catch((err) => setFetchError(err instanceof Error ? err.message : "Could not load nearby providers"))
-      .finally(() => setFetching(false));
-  }, [coords, radiusKm]);
+  // app/providers/nearby/page.tsx
+useEffect(() => {
+  if (!coords) return;
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  setFetching(true);
+  setFetchError(null);
+  fetchNearbyProviders(coords.lat, coords.lng, radiusKm)
+    .then(setProviders)
+    .catch((err) => setFetchError(err instanceof Error ? err.message : "Could not load nearby providers"))
+    .finally(() => setFetching(false));
+}, [coords, radiusKm]);
 
   return (
     <div className="mx-auto max-w-2xl p-8">
